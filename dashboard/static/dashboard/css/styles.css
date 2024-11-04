@@ -1,0 +1,85 @@
+/* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-link {
+    margin-right: 15px;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #1DA1F2;
+}
+
+/* Main content */
+.container {
+    max-width: 1200px;
+    margin-top: 20px;
+}
+
+/* Movie card styling */
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card img {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.card-release_date,
+.card-genre {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.card-genre {
+    font-weight: bold;
+}
+
+/* Vertical scroll container */
+.movie-container {
+    padding-right: 15px; /* Space for scrollbar */
+}
+
+/* Footer */
+footer {
+    background-color: #222;
+    color: #bbb;
+    padding: 15px 0;
+    text-align: center;
+}
+
+footer a {
+    color: #1DA1F2;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
