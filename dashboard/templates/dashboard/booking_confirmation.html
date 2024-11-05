@@ -1,0 +1,12 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Booking Confirmation</h2>
+    <p>Thank you for booking!</p>
+    <p>Movie: {{ ticket.show.movie.title }}</p>
+    <p>Show Time: {{ ticket.show.show_time|date:"M d, Y H:i" }}</p>
+    <p>Seats Booked: {{ ticket.num_of_seats }}</p>
+    <p>Status: {{ ticket.status }}</p>
+</div>
+{% endblock %}

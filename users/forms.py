@@ -27,3 +27,23 @@ class CustomUserLoginForm(AuthenticationForm):
     class Meta:
         model = CustomUser
         fields = ["username", "password"]
+
+
+class CustomerUserProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomerUserProfile
+        fields = ["phone_number", "city"]
+        widgets = {
+            "phone_number": forms.TextInput(attrs={"class": "form-control"}),
+            "city": forms.TextInput(attrs={"class": "form-control"}),
+        }
+
+
+class TheatreUserProfileForm(forms.ModelForm):
+    class Meta:
+        model = TheatreUserProfile
+        fields = ["name", "location"]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+            "location": forms.TextInput(attrs={"class": "form-control"}),
+        }
