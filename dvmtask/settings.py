@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "dashboard.apps.DashboardConfig",
     "ticketbooking.apps.TicketbookingConfig",
-    "wallet.apps.WalletConfig",
+    "transactions.apps.TransactionsConfig",
     "movies.apps.MoviesConfig",
+    "foodorder.apps.FoodorderConfig",
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -122,7 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATIC_URL = "static/"
-
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Default primary key field type
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-auto-field
 

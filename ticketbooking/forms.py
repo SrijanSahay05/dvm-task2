@@ -18,7 +18,7 @@ class ScreenForm(forms.ModelForm):
 class ShowForm(forms.ModelForm):
     class Meta:
         model = show
-        fields = ["screen", "movie", "show_time", "price"]
+        fields = ["screen", "movie", "show_time", "price", "food_allowed"]
         widgets = {
             "screen": forms.Select(attrs={"class": "form-control"}),
             "movie": forms.Select(attrs={"class": "form-control"}),
@@ -29,6 +29,7 @@ class ShowForm(forms.ModelForm):
                 }
             ),
             "price": forms.NumberInput(attrs={"class": "form-control"}),
+            "food_allowed": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 
 

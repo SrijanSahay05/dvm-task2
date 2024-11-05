@@ -2,6 +2,7 @@ from django.urls import path
 from . import views as dashboard_view
 import users.views as user_view
 import ticketbooking.views as ticketbooking_view
+import transactions.views as transaction_view
 
 urlpatterns = [
     path("", dashboard_view.index.as_view(), name="home"),
@@ -45,4 +46,5 @@ urlpatterns = [
         ticketbooking_view.booking_confirmation,
         name="booking-confirmation",
     ),
+    path("deposit/", transaction_view.deposit_funds, name="deposit-funds"),
 ]

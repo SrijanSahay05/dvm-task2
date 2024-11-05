@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView
 from movies.models import Movie
 from movies.forms import MovieAddForm
 from ticketbooking.models import screen, show, ticket
+from transactions.models import Wallet, Transactions
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
@@ -34,6 +35,14 @@ class MovieDetailView(DetailView):
 
 @login_required
 def dashboard(request):
+    # Ensure the user has a wallet and get it
+    wallet, created = Wallet.objects.get_or_create(user=request.user)
+
+    # Query transactions where the user is either the sender or receiver
+    transactions = Transactions.objects.filter(
+        Q(sender_wallet=wallet) | Q(receiver_wallet=wallet)
+    ).order_by("-timestamp")
+
     if hasattr(request.user, "theatre_profile"):
         # Theater admin dashboard context
         theatre_profile = request.user.theatre_profile
@@ -54,18 +63,24 @@ def dashboard(request):
                 "screens": screens,
                 "shows": shows,
                 "movies": movies,
+                "wallet": wallet,
+                "transactions": transactions,
             },
         )
 
     elif hasattr(request.user, "customer_profile"):
         # Customer dashboard context
-        customer_tickets = ticket.objects.filter(user=request.user.customer_profile)
+        customer_tickets = ticket.objects.filter(
+            user=request.user.customer_profile
+        ).order_by("-time_of_booking")
 
         return render(
             request,
             "dashboard/customer_dashboard.html",
             {
                 "customer_tickets": customer_tickets,
+                "wallet": wallet,
+                "transactions": transactions,
             },
         )
 

@@ -2,41 +2,101 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">My Tickets</h2>
+    <h2 class="mb-4">My Dashboard</h2>
     
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white">
-            <h5>Tickets</h5>
+    <!-- Dashboard Content Row for Wallet and Transactions -->
+    <div class="row">
+        <!-- Wallet Section -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4 h-100 equal-height">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Wallet</h5>
+                    <i class="fas fa-wallet fa-lg"></i>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p><strong>Balance:</strong> ${{ wallet.balance }}</p>
+                    <a href="{% url 'deposit-funds' %}" class="btn btn-success mt-auto">Deposit Funds</a>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Movie</th>
-                        <th>Show Time</th>
-                        <th>Screen</th>
-                        <th>Theater</th>
-                        <th>Number of Seats</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ticket in customer_tickets %}
-                        <tr>
-                            <td>{{ ticket.show.movie.title }}</td>
-                            <td>{{ ticket.show.show_time|date:"F d, Y H:i" }}</td>
-                            <td>{{ ticket.show.screen.screen_name }}</td>
-                            <td>{{ ticket.show.screen.theatre.name }}</td>
-                            <td>{{ ticket.num_of_seats }}</td>
-                            <td>{{ ticket.status }}</td>
-                        </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center">No tickets available.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        
+        <!-- Transaction History Section -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4 h-100 equal-height">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Transaction History</h5>
+                    <i class="fas fa-history fa-lg"></i>
+                </div>
+                <div class="card-body table-responsive" style="max-height: 200px; overflow-y: auto;">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions %}
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-{{ transaction.transaction_type|lower }} mr-1"></i>
+                                        {{ transaction.transaction_type|title }}
+                                    </td>
+                                    <td>${{ transaction.amount }}</td>
+                                    <td>
+                                        <span class="badge {% if transaction.status == 'COMPLETE' %}bg-success{% elif transaction.status == 'REVERTED' %}bg-danger{% else %}bg-warning{% endif %}">
+                                            {{ transaction.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ transaction.timestamp|date:"F d, Y H:i" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No transactions found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ticket History Section Below Wallet and Transactions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Ticket History</h5>
+                    <i class="fas fa-ticket-alt fa-lg"></i>
+                </div>
+                <div class="card-body table-responsive" style="max-height: 600px; overflow-y: auto;">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Movie</th>
+                                <th>Seats</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticket in customer_tickets %}
+                                <tr>
+                                    <td>{{ ticket.show.movie.title }}</td>
+                                    <td>{{ ticket.num_of_seats }}</td>
+                                    <td>{{ ticket.show.show_time|date:"F d, Y H:i" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No tickets found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

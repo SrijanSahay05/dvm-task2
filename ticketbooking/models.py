@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models.fields.related import ForwardOneToOneDescriptor
 from users.models import TheatreUserProfile, CustomerUserProfile
 from movies.models import Movie
+from django.utils import timezone
 
 
 class screen(models.Model):
@@ -19,6 +21,7 @@ class show(models.Model):
     show_time = models.DateTimeField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     available_seats = models.IntegerField(default=0)  # Available seats per show
+    food_allowed = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         # Initialize available_seats based on screen.total_seats if this is a new instance
@@ -35,6 +38,7 @@ class ticket(models.Model):
     user = models.ForeignKey(CustomerUserProfile, on_delete=models.CASCADE)
     num_of_seats = models.IntegerField()
     status = models.CharField(max_length=20, default="Booked")
+    time_of_booking = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.show.movie.title} - {self.num_of_seats} seats"

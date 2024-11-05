@@ -21,6 +21,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ movie.title }}</h5>
                     <p class="card-text">{{ movie.description|truncatewords:20 }}</p>
+                    <a href="{% url 'movie-detail' movie.id %}" class="btn btn-primary">Book Now</a>
                 </div>
                 <div class="card-footer">
                     <small class="text-muted">Release Date: {{ movie.release_date|date:"M d, Y" }}</small>

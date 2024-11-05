@@ -1,0 +1,23 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Deposit Funds</h2>
+    
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4>Current Balance: ${{ wallet.balance }}</h4>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Deposit Funds</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

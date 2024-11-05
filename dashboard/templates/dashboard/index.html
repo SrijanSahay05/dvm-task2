@@ -31,32 +31,14 @@
                     </div>
                 </div>
             </div>
+            {% empty %}
+            <div class="col-12 d-flex justify-content-center align-items-center" style="min-height: 200px;">
+                <div class="card text-center bg-light shadow-sm p-4 w-50">
+                    <h5 class="card-title">No Movies Available</h5>
+                    <p class="card-text">Currently, there are no movies available for booking. Please check back later.</p>
+                </div>
+            </div>
             {% endfor %}
-        </div>
-    </div>
-
-    <!-- Nearby Theatres Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2 class="mb-3">Nearby Theatres</h2>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Theatre Name 1</h5>
-                    <p class="card-text">Address and brief description of the theatre.</p>
-                    <a href="#" class="btn btn-secondary">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Theatre Name 2</h5>
-                    <p class="card-text">Address and brief description of the theatre.</p>
-                    <a href="#" class="btn btn-secondary">View Details</a>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -65,7 +47,6 @@
         <div class="col-12">
             <h2 class="mb-3">Special Offers</h2>
             <div class="p-4 bg-light rounded">
-                  
                 <p>Check out our limited-time offers for movie tickets and theatre bookings.</p>
                 <a href="#" class="btn btn-success">Explore Offers</a>
             </div>

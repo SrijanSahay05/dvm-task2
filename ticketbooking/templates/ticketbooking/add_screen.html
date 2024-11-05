@@ -1,11 +1,12 @@
 {% extends 'dashboard/base.html' %}
+{% load crispy_forms_tags %}  <!-- Load crispy forms -->
 
 {% block content %}
 <div class="container mt-5">
     <h2>Add Screen</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form|crispy }}
         <button type="submit" class="btn btn-primary">Add Screen</button>
     </form>
 </div>
