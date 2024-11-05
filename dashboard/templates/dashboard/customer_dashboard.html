@@ -1,0 +1,43 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">My Tickets</h2>
+    
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5>Tickets</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th>Show Time</th>
+                        <th>Screen</th>
+                        <th>Theater</th>
+                        <th>Number of Seats</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in customer_tickets %}
+                        <tr>
+                            <td>{{ ticket.show.movie.title }}</td>
+                            <td>{{ ticket.show.show_time|date:"F d, Y H:i" }}</td>
+                            <td>{{ ticket.show.screen.screen_name }}</td>
+                            <td>{{ ticket.show.screen.theatre.name }}</td>
+                            <td>{{ ticket.num_of_seats }}</td>
+                            <td>{{ ticket.status }}</td>
+                        </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No tickets available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

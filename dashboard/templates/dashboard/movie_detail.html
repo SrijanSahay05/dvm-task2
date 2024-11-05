@@ -1,0 +1,69 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">{{ movie.title }}</h2>
+    
+    <div class="row">
+        <!-- Movie Details on the Left -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5>Movie Details</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Genre:</strong> {{ movie.genre }}</p>
+                    <p><strong>Release Date:</strong> {{ movie.release_date|date:"F d, Y" }}</p>
+                    <p><strong>Rating:</strong> {{ movie.rating }}/10</p>
+                    <p><strong>Duration:</strong> {{ movie.duration }} minutes</p>
+                    <p><strong>Director:</strong> {{ movie.director }}</p>
+                    
+                    <div class="mt-4">
+                        <h5>Description:</h5>
+                        <p>{{ movie.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Showtimes List on the Right -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5>Showtimes</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Theater</th>
+                                <th>Screen</th>
+                                <th>Show Time</th>
+                                <th>Price</th>
+                                <th>Available Seats</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for show in future_shows %}
+                                <tr>
+                                    <td>{{ show.screen.theatre.name }}</td>
+                                    <td>{{ show.screen.screen_name }}</td>
+                                    <td>{{ show.show_time|date:"F d, Y H:i" }}</td>
+                                    <td>${{ show.price }}</td>
+                                    <td>{{ show.available_seats }}</td>
+                                    <td><a href="{% url 'book-ticket' show.id %}" class="btn btn-primary">Book Now</a></td>
+                                </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No upcoming shows available.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

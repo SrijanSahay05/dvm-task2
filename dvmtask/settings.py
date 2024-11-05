@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "dashboard.apps.DashboardConfig",
     "ticketbooking.apps.TicketbookingConfig",
-    "transactions.apps.TransactionsConfig",
     "wallet.apps.WalletConfig",
     "movies.apps.MoviesConfig",
 ]

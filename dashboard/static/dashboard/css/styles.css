@@ -37,9 +37,15 @@ body {
     transform: translateY(-5px);
 }
 
+/* Magnify image on hover */
 .card img {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover img {
+    transform: scale(1.1); /* Magnify image slightly */
 }
 
 .card-body {

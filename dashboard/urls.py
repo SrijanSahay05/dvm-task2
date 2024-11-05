@@ -24,6 +24,7 @@ urlpatterns = [
         ticketbooking_view.edit_show,
         name="edit_show",
     ),
+    path("dashboard/add-movie/", dashboard_view.add_movie, name="add-movie"),
     path("profile/", user_view.profile, name="profile"),
     path(
         "delete-screen/<int:screen_id>/",
@@ -33,10 +34,15 @@ urlpatterns = [
     path(
         "delete-show/<int:show_id>/", ticketbooking_view.delete_show, name="delete_show"
     ),
-    path("book-ticket/<int:show_id>/", dashboard_view.book_ticket, name="book_ticket"),
     path(
-        "booking-confirmatin/<int:ticket_id>/",
-        dashboard_view.booking_confirmation,
-        name="booking_confirmation",
+        "movie/<int:pk>/", dashboard_view.MovieDetailView.as_view(), name="movie-detail"
+    ),
+    path(
+        "book-ticket/<int:show_id>/", ticketbooking_view.book_ticket, name="book-ticket"
+    ),
+    path(
+        "booking-confirmation/<int:ticket_id>/",
+        ticketbooking_view.booking_confirmation,
+        name="booking-confirmation",
     ),
 ]

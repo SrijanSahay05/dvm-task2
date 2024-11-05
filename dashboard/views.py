@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 from django.views.generic import ListView, DetailView
 from movies.models import Movie
-from ticketbooking.models import screen, show
+from movies.forms import MovieAddForm
+from ticketbooking.models import screen, show, ticket
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 
 class index(ListView):
@@ -15,37 +18,59 @@ class index(ListView):
     ordering = ["-release_date"]
 
 
+class MovieDetailView(DetailView):
+    model = Movie
+    template_name = "dashboard/movie_detail.html"
+    context_object_name = "movie"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Filter future shows based on show_time
+        context["future_shows"] = self.object.show_set.filter(
+            show_time__gt=timezone.now()
+        )
+        return context
+
+
+@login_required
 def dashboard(request):
-    if request.user.is_authenticated:
-        try:
-            if hasattr(request.user, "theatre_profile"):
-                theatre_profile = request.user.theatre_profile
-                theatre_name = theatre_profile.name
-                num_of_screens = screen.objects.filter(theatre=theatre_profile).count()
-                screens = screen.objects.filter(theatre=theatre_profile)
-                shows = show.objects.filter(screen__theatre=theatre_profile)
-                movies = Movie.objects.all()
-                return render(
-                    request,
-                    "dashboard/theatre_dashboard.html",
-                    {
-                        "num_of_screens": num_of_screens,
-                        "theatre_profile": theatre_profile,
-                        "theatre_name": theatre_name,
-                        "screens": screens,
-                        "shows": shows,
-                        "movies": movies,
-                    },
-                )
-            elif hasattr(request.user, "customer_profile"):
-                return render(request, "dashboard/customer_dashboard.html")
-            else:
-                return redirect("home")
-        except Exception as e:
-            print(f"Error checking user profile: {e}")
-            return redirect("home")
+    if hasattr(request.user, "theatre_profile"):
+        # Theater admin dashboard context
+        theatre_profile = request.user.theatre_profile
+        theatre_name = theatre_profile.name
+        num_of_screens = screen.objects.filter(theatre=theatre_profile).count()
+        screens = screen.objects.filter(theatre=theatre_profile).order_by("screen_name")
+        shows = show.objects.filter(screen__theatre=theatre_profile).order_by(
+            "-show_time"
+        )
+        movies = Movie.objects.all().order_by("-release_date")
+
+        return render(
+            request,
+            "dashboard/theatre_dashboard.html",
+            {
+                "theatre_name": theatre_name,
+                "num_of_screens": num_of_screens,
+                "screens": screens,
+                "shows": shows,
+                "movies": movies,
+            },
+        )
+
+    elif hasattr(request.user, "customer_profile"):
+        # Customer dashboard context
+        customer_tickets = ticket.objects.filter(user=request.user.customer_profile)
+
+        return render(
+            request,
+            "dashboard/customer_dashboard.html",
+            {
+                "customer_tickets": customer_tickets,
+            },
+        )
+
     else:
-        return redirect("login")
+        return redirect("home")
 
 
 @login_required
@@ -81,57 +106,25 @@ class MovieBrowseView(ListView):
     paginate_by = 10
     ordering = ["-release_date"]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get("q")
+        if query:
+            queryset = queryset.filter(
+                Q(title__icontains=query)
+                | Q(description__icontains=query)
+                | Q(show__screen__theatre__name__icontains=query)
+            ).distinct()
+        return queryset
 
-@login_required
-def book_ticket(request, show_id):
-    show_instance = get_object_or_404(show, id=show_id)
-    available_seats = show_instance.screen.available_seats
 
+def add_movie(request):
     if request.method == "POST":
-        form = TicketBookingForm(request.POST, show_instance=show_instance)
+        form = MovieAddForm(request.POST, request.FILES)
         if form.is_valid():
-            num_of_seats = form.cleaned_data["num_of_seats"]
-
-            if num_of_seats > available_seats:
-                form.add_error("num_of_seats", "Not enough seats available.")
-            else:
-                # Create the ticket and update available seats
-                ticket_instance = ticket.objects.create(
-                    show=show_instance,
-                    user=request.user.customer_profile,  # Assuming only customers can book tickets
-                    num_of_seats=num_of_seats,
-                    status="Booked",
-                )
-                # Update the available seats
-                show_instance.screen.available_seats -= num_of_seats
-                show_instance.screen.save()
-
-                messages.success(request, "Ticket booked successfully!")
-                return redirect("booking_confirmation", ticket_id=ticket_instance.id)
-
+            form.save()
+            messages.success(request, "Movie added successfully!")
+            return redirect("theatre-dashboard")
     else:
-        form = TicketBookingForm(show_instance=show_instance)
-
-    return render(
-        request,
-        "ticketbooking/book_ticket.html",
-        {
-            "form": form,
-            "show": show_instance,
-            "available_seats": available_seats,
-        },
-    )
-
-
-@login_required
-def booking_confirmation(request, ticket_id):
-    ticket_instance = get_object_or_404(
-        ticket, id=ticket_id, user=request.user.customer_profile
-    )
-    return render(
-        request,
-        "ticketbooking/booking_confirmation.html",
-        {
-            "ticket": ticket_instance,
-        },
-    )
+        form = MovieAddForm()
+    return render(request, "dashboard/add_movie.html", {"form": form})
